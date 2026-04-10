@@ -2,31 +2,37 @@
 <data>
     <xpath expr="/form/group[@id='group_prescription_notes']" position="after">
         <!-- Audit Section -->
-        <group colspan="4" col="6" id="group_audit_status"
-               groups="test_module.group_prescription_auditor">
-            <separator string="Auditing" colspan="6" id="separator_audit_status"/>
-            <field name="audit_state" colspan="2"/>
-            <field name="audit_date" colspan="2"/>
-            <field name="audit_user" colspan="2"/>
+        <group colspan="4" col="6" id="group_audit_status">
+            <separator string="Auditing" colspan="6" id="separator_audit_status"
+                       groups="test_module.group_prescription_auditor"/>
+            <field name="audit_state" colspan="2"
+                   groups="test_module.group_prescription_auditor"/>
+            <field name="audit_date" colspan="2"
+                   groups="test_module.group_prescription_auditor"/>
+            <field name="audit_user" colspan="2"
+                   groups="test_module.group_prescription_auditor"/>
         </group>
-        <group colspan="4" col="6" id="group_audit_action"
-               groups="test_module.group_prescription_auditor">
-            <separator string="Audit Actions" colspan="6" id="separator_audit_action"/>
+        <group colspan="4" col="6" id="group_audit_action">
+            <separator string="Audit Actions" colspan="6" id="separator_audit_action"
+                       groups="test_module.group_prescription_auditor"/>
             <button name="approve_prescription"
                     string="Approve"
                     icon="tryton-ok"
                     help="Mark prescription as approved"
-                    colspan="2"/>
+                    colspan="2"
+                    groups="test_module.group_prescription_auditor"/>
             <button name="reject_prescription"
                     string="Reject"
                     icon="tryton-cancel"
                     help="Mark prescription as rejected"
-                    colspan="2"/>
+                    colspan="2"
+                    groups="test_module.group_prescription_auditor"/>
             <button name="reset_audit"
                     string="Reset Audit"
                     icon="tryton-refresh"
                     help="Reset audit status to pending"
-                    colspan="2"/>
+                    colspan="2"
+                    groups="test_module.group_prescription_auditor"/>
         </group>
         <field name="audit_notes" colspan="4"
                groups="test_module.group_prescription_auditor"/>
