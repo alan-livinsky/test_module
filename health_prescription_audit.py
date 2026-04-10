@@ -19,18 +19,36 @@ class PatientPrescriptionOrder(metaclass=PoolMeta):
         ('pending', 'Pending Audit'),
         ('aprobada', 'Aprobada'),
         ('rechazada', 'Rechazada'),
-    ], 'Audit Status', readonly=True, sort=False,
-       help='Auditing status for the prescription')
+    ], 'Audit Status', sort=False,
+        states={
+            'readonly': True,
+            'invisible': ~Bool(Eval('is_auditor', False)),
+        },
+        depends=['is_auditor'],
+        help='Auditing status for the prescription')
 
-    audit_notes = fields.Text('Audit Notes', 
-        states={'readonly': Eval('audit_state') != 'pending'},
-        depends=['audit_state'],
+    audit_notes = fields.Text('Audit Notes',
+        states={
+            'readonly': Eval('audit_state') != 'pending',
+            'invisible': ~Bool(Eval('is_auditor', False)),
+        },
+        depends=['audit_state', 'is_auditor'],
         help='Notes about the audit decision')
 
-    audit_date = fields.DateTime('Audit Date', readonly=True,
+    audit_date = fields.DateTime('Audit Date',
+        states={
+            'readonly': True,
+            'invisible': ~Bool(Eval('is_auditor', False)),
+        },
+        depends=['is_auditor'],
         help='Date when the prescription was audited')
 
-    audit_user = fields.Many2One('res.user', 'Auditor', readonly=True,
+    audit_user = fields.Many2One('res.user', 'Auditor',
+        states={
+            'readonly': True,
+            'invisible': ~Bool(Eval('is_auditor', False)),
+        },
+        depends=['is_auditor'],
         help='User who performed the audit')
 
     is_auditor = fields.Function(
