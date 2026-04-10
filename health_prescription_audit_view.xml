@@ -10,7 +10,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <!-- Modify the prescription form to add audit fields -->
         <record model="ir.ui.view" id="prescription_audit_form">
             <field name="model">gnuhealth.prescription.order</field>
-            <field name="inherit" ref="health.gnuhealth_prescription_form"/>
+            <field name="inherit" ref="health.gnuhealth_prescription_view"/>
             <field name="name">prescription_audit_form</field>
         </record>
     </data>
