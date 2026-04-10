@@ -93,16 +93,44 @@ Must declare `ir.model.button` + `ir.model.button.rule` for each of the three bu
 
 ---
 
+## View-Level Hiding (`groups` attribute)
+
+The `groups` attribute on view arch elements hides UI elements for users who do not belong to the specified group. It is set directly in the arch XML file and requires no Python changes.
+
+```xml
+<group id="group_audit_status"
+       groups="health_prescription_audit.group_prescription_auditor">
+    ...
+</group>
+```
+
+The format is `module_name.xml_id_of_group`. Applied to a container `<group>`, it hides the entire section in one declaration — no need to add `groups=` to every individual field inside.
+
+### What is hidden from non-auditors in this module
+
+All three audit sections are hidden entirely:
+
+| Element | groups= applied on |
+|---|---|
+| Status section (state, date, user) | `<group id="group_audit_status">` |
+| Action buttons (approve, reject, reset) | `<group id="group_audit_action">` |
+| Audit notes field | `<field name="audit_notes">` |
+
+Non-auditors open the prescription form and see no trace of the audit section.
+
+---
+
 ## Important Distinction: Visibility vs. Security
 
 | Mechanism | Where enforced | Can be bypassed? |
 |---|---|---|
+| `groups=` on view element | Client (browser/GTK) | Yes — direct RPC call |
 | PYSON `invisible` on button | Client (browser/GTK) | Yes — direct RPC call |
 | `ir.model.button.rule` | Server | No |
 | `ir.model.field.access` | Server | No |
 | `ir.model.access` | Server | No |
 
-Never rely on PYSON conditions alone to protect sensitive operations.
+Never rely on `groups=` or PYSON conditions alone to protect sensitive operations. They must always be backed by server-side rules.
 
 ---
 

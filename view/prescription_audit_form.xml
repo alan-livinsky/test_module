@@ -2,13 +2,15 @@
 <data>
     <xpath expr="/form/group[@id='group_prescription_notes']" position="after">
         <!-- Audit Section -->
-        <group colspan="4" col="6" id="group_audit_status">
+        <group colspan="4" col="6" id="group_audit_status"
+               groups="health_prescription_audit.group_prescription_auditor">
             <separator string="Auditing" colspan="6" id="separator_audit_status"/>
             <field name="audit_state" colspan="2"/>
             <field name="audit_date" colspan="2"/>
             <field name="audit_user" colspan="2"/>
         </group>
-        <group colspan="4" col="6" id="group_audit_action">
+        <group colspan="4" col="6" id="group_audit_action"
+               groups="health_prescription_audit.group_prescription_auditor">
             <separator string="Audit Actions" colspan="6" id="separator_audit_action"/>
             <button name="approve_prescription"
                     string="Approve"
@@ -26,6 +28,7 @@
                     help="Reset audit status to pending"
                     colspan="2"/>
         </group>
-        <field name="audit_notes" colspan="4"/>
+        <field name="audit_notes" colspan="4"
+               groups="health_prescription_audit.group_prescription_auditor"/>
     </xpath>
 </data>
