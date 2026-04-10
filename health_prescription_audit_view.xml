@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+SPDX-FileCopyrightText: 2024 Custom GNU Health
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+<tryton>
+    <data>
+        <!-- Modify the prescription form to add audit fields -->
+        <record model="ir.ui.view" id="prescription_audit_form">
+            <field name="model">gnuhealth.prescription.order</field>
+            <field name="type">form</field>
+            <field name="name">prescription_audit_form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <xpath expr="/form/group[@id=&quot;group_prescription_notes&quot;]" position="after">
+                        <!-- Audit Section -->
+                        <group colspan="4" col="6" id="group_audit_status">
+                            <separator string="Auditing" colspan="6"/>
+                            <field name="audit_state" colspan="2"/>
+                            <field name="audit_date" colspan="2"/>
+                            <field name="audit_user" colspan="2"/>
+                        </group>
+                        <group colspan="4" col="6" id="group_audit_action">
+                            <separator string="Audit Actions" colspan="6"/>
+                            <button name="approve_prescription" 
+                                    string="Approve" 
+                                    icon="tryton-ok"
+                                    help="Mark prescription as approved"
+                                    colspan="2"/>
+                            <button name="reject_prescription" 
+                                    string="Reject" 
+                                    icon="tryton-cancel"
+                                    help="Mark prescription as rejected"
+                                    colspan="2"/>
+                            <button name="reset_audit" 
+                                    string="Reset Audit" 
+                                    icon="tryton-refresh"
+                                    help="Reset audit status to pending"
+                                    colspan="2"/>
+                        </group>
+                        <field name="audit_notes" colspan="4"/>
+                    </xpath>
+                </form>
+            </field>
+        </record>
+    </data>
+</tryton>

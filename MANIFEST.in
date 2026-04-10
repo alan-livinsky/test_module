@@ -1,0 +1,7 @@
+include README.rst
+include COPYING
+include tryton.cfg
+include locale/*/LC_MESSAGES/*.po
+include locale/*/LC_MESSAGES/*.pot
+recursive-include tests *.py
+recursive-include doc *
