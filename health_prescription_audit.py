@@ -50,6 +50,10 @@ class PatientPrescriptionOrder(metaclass=PoolMeta):
                 'invisible': Eval('audit_state') != 'pending',
                 'depends': ['audit_state'],
             },
+            'reset_audit': {
+                'invisible': Eval('audit_state') == 'pending',
+                'depends': ['audit_state'],
+            },
         })
 
     @classmethod

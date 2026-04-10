@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<data>
+    <xpath expr="/form/group[@id='group_prescription_notes']" position="after">
+        <!-- Audit Section -->
+        <group colspan="4" col="6" id="group_audit_status">
+            <separator string="Auditing" colspan="6"/>
+            <field name="audit_state" colspan="2"/>
+            <field name="audit_date" colspan="2"/>
+            <field name="audit_user" colspan="2"/>
+        </group>
+        <group colspan="4" col="6" id="group_audit_action">
+            <separator string="Audit Actions" colspan="6"/>
+            <button name="approve_prescription"
+                    string="Approve"
+                    icon="tryton-ok"
+                    help="Mark prescription as approved"
+                    colspan="2"/>
+            <button name="reject_prescription"
+                    string="Reject"
+                    icon="tryton-cancel"
+                    help="Mark prescription as rejected"
+                    colspan="2"/>
+            <button name="reset_audit"
+                    string="Reset Audit"
+                    icon="tryton-refresh"
+                    help="Reset audit status to pending"
+                    colspan="2"/>
+        </group>
+        <field name="audit_notes" colspan="4"/>
+    </xpath>
+</data>
