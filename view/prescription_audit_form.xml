@@ -3,7 +3,7 @@
     <xpath expr="/form/group[@id='group_prescription_notes']" position="after">
         <!-- Audit Section -->
         <!-- Hidden field used by PYSON to evaluate auditor membership -->
-        <field name="is_auditor" invisible="1"/>
+        <field name="is_auditor" states="{'invisible': True}"/>
         <group colspan="4" col="6" id="group_audit_status">
             <separator string="Auditing" colspan="6" id="separator_audit_status"
                        states="{'invisible': ~Eval('is_auditor', False)}"/>

@@ -45,10 +45,12 @@ class PatientPrescriptionOrder(metaclass=PoolMeta):
         try:
             group_id = ModelData.get_id('test_module', 'group_prescription_auditor')
         except KeyError:
+            logger.warning('get_is_auditor: group_prescription_auditor not found in ir.model.data')
             return {p.id: False for p in prescriptions}
         user = User(Transaction().user)
         user_group_ids = [g.id for g in user.groups]
         is_aud = group_id in user_group_ids
+        logger.info(f'get_is_auditor: user={user.name} group_id={group_id} user_groups={user_group_ids} result={is_aud}')
         return {p.id: is_aud for p in prescriptions}
 
     @staticmethod
