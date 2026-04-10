@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from trytond.model import fields, ModelView
-from trytond.pool import PoolMeta
+from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, Equal, Or
 from trytond.transaction import Transaction
 from trytond import backend
@@ -61,10 +61,10 @@ class PatientPrescriptionOrder(metaclass=PoolMeta):
     def approve_prescription(cls, prescriptions):
         """Set prescription as aprobada (approved)"""
         from datetime import datetime
-        User = cls.__pool__.get('res.user')
-        
+        User = Pool().get('res.user')
+
         current_user = User(Transaction().user)
-        
+
         cls.write(prescriptions, {
             'audit_state': 'aprobada',
             'audit_date': datetime.now(),
@@ -78,10 +78,10 @@ class PatientPrescriptionOrder(metaclass=PoolMeta):
     def reject_prescription(cls, prescriptions):
         """Set prescription as rechazada (rejected)"""
         from datetime import datetime
-        User = cls.__pool__.get('res.user')
-        
+        User = Pool().get('res.user')
+
         current_user = User(Transaction().user)
-        
+
         cls.write(prescriptions, {
             'audit_state': 'rechazada',
             'audit_date': datetime.now(),
