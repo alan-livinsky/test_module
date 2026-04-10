@@ -110,13 +110,15 @@ The format is `module_name.xml_id_of_group`. In Tryton 6.0, `groups=` is **not s
 
 ### What is hidden from non-auditors in this module
 
-All three audit sections are hidden entirely:
+All audit elements have `groups=` applied individually:
 
 | Element | groups= applied on |
 |---|---|
-| Status section (state, date, user) | `<group id="group_audit_status">` |
-| Action buttons (approve, reject, reset) | `<group id="group_audit_action">` |
-| Audit notes field | `<field name="audit_notes">` |
+| Separator "Auditing" | `<separator id="separator_audit_status">` |
+| `audit_state`, `audit_date`, `audit_user` | each `<field>` individually |
+| Separator "Audit Actions" | `<separator id="separator_audit_action">` |
+| approve, reject, reset buttons | each `<button>` individually |
+| `audit_notes` | `<field name="audit_notes">` |
 
 Non-auditors open the prescription form and see no trace of the audit section.
 
