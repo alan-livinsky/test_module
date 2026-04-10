@@ -13,5 +13,83 @@ SPDX-License-Identifier: GPL-3.0-or-later
             <field name="inherit" ref="health.gnuhealth_prescription_view"/>
             <field name="name">prescription_audit_form</field>
         </record>
+
+        <!-- ======================================================= -->
+        <!-- GROUP                                                     -->
+        <!-- ======================================================= -->
+        <record model="res.group" id="group_prescription_auditor">
+            <field name="name">Prescription Auditor</field>
+        </record>
+
+        <!-- ======================================================= -->
+        <!-- FIELD ACCESS                                             -->
+        <!-- ======================================================= -->
+
+        <!-- audit_state -->
+        <record model="ir.model.field.access" id="access_audit_state_auditor">
+            <field name="field" search="[('model.model', '=', 'gnuhealth.prescription.order'), ('name', '=', 'audit_state')]"/>
+            <field name="group" ref="group_prescription_auditor"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+        </record>
+
+        <!-- audit_notes -->
+        <record model="ir.model.field.access" id="access_audit_notes_auditor">
+            <field name="field" search="[('model.model', '=', 'gnuhealth.prescription.order'), ('name', '=', 'audit_notes')]"/>
+            <field name="group" ref="group_prescription_auditor"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+        </record>
+
+        <!-- audit_date -->
+        <record model="ir.model.field.access" id="access_audit_date_auditor">
+            <field name="field" search="[('model.model', '=', 'gnuhealth.prescription.order'), ('name', '=', 'audit_date')]"/>
+            <field name="group" ref="group_prescription_auditor"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+        </record>
+
+        <!-- audit_user -->
+        <record model="ir.model.field.access" id="access_audit_user_auditor">
+            <field name="field" search="[('model.model', '=', 'gnuhealth.prescription.order'), ('name', '=', 'audit_user')]"/>
+            <field name="group" ref="group_prescription_auditor"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+        </record>
+
+        <!-- ======================================================= -->
+        <!-- BUTTON RULES                                             -->
+        <!-- ======================================================= -->
+
+        <!-- approve_prescription -->
+        <record model="ir.model.button" id="button_approve_prescription">
+            <field name="name">approve_prescription</field>
+            <field name="model" search="[('model', '=', 'gnuhealth.prescription.order')]"/>
+        </record>
+        <record model="ir.model.button.rule" id="rule_approve_prescription">
+            <field name="button" ref="button_approve_prescription"/>
+            <field name="group" ref="group_prescription_auditor"/>
+        </record>
+
+        <!-- reject_prescription -->
+        <record model="ir.model.button" id="button_reject_prescription">
+            <field name="name">reject_prescription</field>
+            <field name="model" search="[('model', '=', 'gnuhealth.prescription.order')]"/>
+        </record>
+        <record model="ir.model.button.rule" id="rule_reject_prescription">
+            <field name="button" ref="button_reject_prescription"/>
+            <field name="group" ref="group_prescription_auditor"/>
+        </record>
+
+        <!-- reset_audit -->
+        <record model="ir.model.button" id="button_reset_audit">
+            <field name="name">reset_audit</field>
+            <field name="model" search="[('model', '=', 'gnuhealth.prescription.order')]"/>
+        </record>
+        <record model="ir.model.button.rule" id="rule_reset_audit">
+            <field name="button" ref="button_reset_audit"/>
+            <field name="group" ref="group_prescription_auditor"/>
+        </record>
+
     </data>
 </tryton>
