@@ -93,32 +93,63 @@ Must declare `ir.model.button` + `ir.model.button.rule` for each of the three bu
 
 ---
 
-## View-Level Hiding (`groups` attribute)
+## View-Level Hiding (`is_auditor` Function field + PYSON)
 
-The `groups` attribute on view arch elements hides UI elements for users who do not belong to the specified group. It is set directly in the arch XML file and requires no Python changes.
+The `groups=` attribute on arch XML elements does **not work reliably in Tryton 6.0** — it silently has no effect and elements remain visible to all users. Do not use it.
 
-```xml
-<group id="group_audit_status"
-       groups="health_prescription_audit.group_prescription_auditor">
-    ...
-</group>
+The working approach is a `Function` field `is_auditor` computed server-side, used in PYSON `states` and `_buttons` invisible conditions.
+
+### How it works
+
+**1. Python model — `is_auditor` Function field**
+
+```python
+is_auditor = fields.Function(fields.Boolean('Is Auditor'), 'get_is_auditor')
+
+@classmethod
+def get_is_auditor(cls, prescriptions, name):
+    pool = Pool()
+    User = pool.get('res.user')
+    ModelData = pool.get('ir.model.data')
+    try:
+        group_id = ModelData.get_id('test_module', 'group_prescription_auditor')
+    except KeyError:
+        return {p.id: False for p in prescriptions}
+    user = User(Transaction().user)
+    is_aud = group_id in [g.id for g in user.groups]
+    return {p.id: is_aud for p in prescriptions}
 ```
 
-The format is `module_name.xml_id_of_group`. In Tryton 6.0, `groups=` is **not supported on `<group>` container elements** — it must be applied individually to each `<field>`, `<button>`, and `<separator>` inside.
+**2. Python model — `_buttons` invisible conditions**
 
-> **Deployment note:** `module_name` here must be the name the module is actually registered under in the database — i.e. the folder name in `trytond/modules/` and the `module=` value in `Pool.register()`. If the module is deployed as `test_module`, the reference must be `test_module.group_prescription_auditor`, not `health_prescription_audit.group_prescription_auditor`. A wrong module prefix causes the groups filter to silently fail — the element becomes visible to everyone.
+```python
+'approve_prescription': {
+    'invisible': Or(
+        Eval('audit_state') != 'pending',
+        ~Bool(Eval('is_auditor', False)),
+    ),
+    'depends': ['audit_state', 'is_auditor'],
+},
+```
 
-### What is hidden from non-auditors in this module
+**3. Arch XML — hidden loader field + `states` on visible elements**
 
-All audit elements have `groups=` applied individually:
+```xml
+<!-- Load the field so PYSON can evaluate it -->
+<field name="is_auditor" invisible="1"/>
 
-| Element | groups= applied on |
+<field name="audit_state"
+       states="{'invisible': ~Eval('is_auditor', False)}"/>
+```
+
+Buttons do not need `states` in the arch — their visibility is already controlled by `_buttons` in the Python model.
+
+### What is hidden from non-auditors
+
+| Element | Hidden via |
 |---|---|
-| Separator "Auditing" | `<separator id="separator_audit_status">` |
-| `audit_state`, `audit_date`, `audit_user` | each `<field>` individually |
-| Separator "Audit Actions" | `<separator id="separator_audit_action">` |
-| approve, reject, reset buttons | each `<button>` individually |
-| `audit_notes` | `<field name="audit_notes">` |
+| Separators, `audit_state`, `audit_date`, `audit_user`, `audit_notes` | `states` in arch XML |
+| approve, reject, reset buttons | `_buttons` invisible in Python model |
 
 Non-auditors open the prescription form and see no trace of the audit section.
 

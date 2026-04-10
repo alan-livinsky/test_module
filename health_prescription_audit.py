@@ -3,9 +3,8 @@
 
 from trytond.model import fields, ModelView
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval, Equal, Or
+from trytond.pyson import Bool, Eval, Or
 from trytond.transaction import Transaction
-from trytond import backend
 import logging
 
 __all__ = ['PatientPrescriptionOrder']
@@ -34,6 +33,24 @@ class PatientPrescriptionOrder(metaclass=PoolMeta):
     audit_user = fields.Many2One('res.user', 'Auditor', readonly=True,
         help='User who performed the audit')
 
+    is_auditor = fields.Function(
+        fields.Boolean('Is Auditor'),
+        'get_is_auditor')
+
+    @classmethod
+    def get_is_auditor(cls, prescriptions, name):
+        pool = Pool()
+        User = pool.get('res.user')
+        ModelData = pool.get('ir.model.data')
+        try:
+            group_id = ModelData.get_id('test_module', 'group_prescription_auditor')
+        except KeyError:
+            return {p.id: False for p in prescriptions}
+        user = User(Transaction().user)
+        user_group_ids = [g.id for g in user.groups]
+        is_aud = group_id in user_group_ids
+        return {p.id: is_aud for p in prescriptions}
+
     @staticmethod
     def default_audit_state():
         return 'pending'
@@ -43,16 +60,25 @@ class PatientPrescriptionOrder(metaclass=PoolMeta):
         super(PatientPrescriptionOrder, cls).__setup__()
         cls._buttons.update({
             'approve_prescription': {
-                'invisible': Eval('audit_state') != 'pending',
-                'depends': ['audit_state'],
+                'invisible': Or(
+                    Eval('audit_state') != 'pending',
+                    ~Bool(Eval('is_auditor', False)),
+                ),
+                'depends': ['audit_state', 'is_auditor'],
             },
             'reject_prescription': {
-                'invisible': Eval('audit_state') != 'pending',
-                'depends': ['audit_state'],
+                'invisible': Or(
+                    Eval('audit_state') != 'pending',
+                    ~Bool(Eval('is_auditor', False)),
+                ),
+                'depends': ['audit_state', 'is_auditor'],
             },
             'reset_audit': {
-                'invisible': Eval('audit_state') == 'pending',
-                'depends': ['audit_state'],
+                'invisible': Or(
+                    Eval('audit_state') == 'pending',
+                    ~Bool(Eval('is_auditor', False)),
+                ),
+                'depends': ['audit_state', 'is_auditor'],
             },
         })
 
