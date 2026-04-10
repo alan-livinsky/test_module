@@ -106,6 +106,8 @@ The `groups` attribute on view arch elements hides UI elements for users who do 
 
 The format is `module_name.xml_id_of_group`. Applied to a container `<group>`, it hides the entire section in one declaration — no need to add `groups=` to every individual field inside.
 
+> **Deployment note:** `module_name` here must be the name the module is actually registered under in the database — i.e. the folder name in `trytond/modules/` and the `module=` value in `Pool.register()`. If the module is deployed as `test_module`, the reference must be `test_module.group_prescription_auditor`, not `health_prescription_audit.group_prescription_auditor`. A wrong module prefix causes the groups filter to silently fail — the element becomes visible to everyone.
+
 ### What is hidden from non-auditors in this module
 
 All three audit sections are hidden entirely:
